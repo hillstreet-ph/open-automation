@@ -70,7 +70,7 @@
     ]
   },
   "devDependencies": {
-    "@faker-js/faker": "^8.0.2",
+    "@faker-js/faker": "^10.5.0",
     "@n8n/backend-test-utils": "workspace:*",
     "@n8n/playwright-janitor": "workspace:*",
     "@n8n/typescript-config": "workspace:*",
@@ -274,7 +274,7 @@
     "turndown": "catalog:",
     "uuid": "catalog:",
     "validator": "13.15.22",
-    "ws": "8.20.1",
+    "ws": "8.21.0",
     "xml2js": "catalog:",
     "xmllint-wasm": "3.0.1",
     "yaml": "catalog:",
