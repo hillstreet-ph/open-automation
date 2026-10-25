@@ -39,7 +39,7 @@ jobs:
             runner: ${{ vars.RUNNER_PROVIDER == 'github' && 'ubuntu-latest' || 'blacksmith-32vcpu-ubuntu-2204' }}
             arch: amd64
           - platform: linux/arm64
-            runner: ${{ vars.RUNNER_PROVIDER == 'github' && 'ubuntu-latest' || 'blacksmith-32vcpu-ubuntu-2204-arm' }}
+            runner: ${{ vars.RUNNER_PROVIDER == 'github' && 'ubuntu-24.04-arm' || 'blacksmith-32vcpu-ubuntu-2204-arm' }}
             arch: arm64
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -53,8 +53,8 @@ jobs:
         with:
           login-ghcr: 'true'
           login-dockerhub: 'true'
-          dockerhub-username: ${{ secrets.DOCKER_USERNAME }}
-          dockerhub-password: ${{ secrets.DOCKER_PASSWORD }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push runtime target
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
@@ -69,8 +69,8 @@ jobs:
           sbom: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.push == true) }}
           push: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.push == true) }}
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/node-pc:${{ env.NODE_VERSION }}-${{ matrix.arch }}
-            ${{ secrets.DOCKER_USERNAME }}/node-pc:${{ env.NODE_VERSION }}-${{ github.sha }}-${{ matrix.arch }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/node-pc:${{ env.NODE_VERSION }}-${{ matrix.arch }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/node-pc:${{ env.NODE_VERSION }}-${{ github.sha }}-${{ matrix.arch }}
             ghcr.io/${{ github.repository_owner }}/node-pc:${{ env.NODE_VERSION }}-${{ matrix.arch }}
             ghcr.io/${{ github.repository_owner }}/node-pc:${{ env.NODE_VERSION }}-${{ github.sha }}-${{ matrix.arch }}
           no-cache: true
@@ -90,8 +90,8 @@ jobs:
           sbom: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.push == true) }}
           push: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.push == true) }}
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/node-pc:${{ env.NODE_VERSION }}-dev-${{ matrix.arch }}
-            ${{ secrets.DOCKER_USERNAME }}/node-pc:${{ env.NODE_VERSION }}-${{ github.sha }}-dev-${{ matrix.arch }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/node-pc:${{ env.NODE_VERSION }}-dev-${{ matrix.arch }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/node-pc:${{ env.NODE_VERSION }}-${{ github.sha }}-dev-${{ matrix.arch }}
             ghcr.io/${{ github.repository_owner }}/node-pc:${{ env.NODE_VERSION }}-dev-${{ matrix.arch }}
             ghcr.io/${{ github.repository_owner }}/node-pc:${{ env.NODE_VERSION }}-${{ github.sha }}-dev-${{ matrix.arch }}
 
@@ -107,13 +107,13 @@ jobs:
         with:
           login-ghcr: 'true'
           login-dockerhub: 'true'
-          dockerhub-username: ${{ secrets.DOCKER_USERNAME }}
-          dockerhub-password: ${{ secrets.DOCKER_PASSWORD }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Create multi-arch manifests
         run: |
           for REPO in \
-            "${{ secrets.DOCKER_USERNAME }}/node-pc" \
+            "${{ secrets.DOCKERHUB_USERNAME }}/node-pc" \
             "ghcr.io/${{ github.repository_owner }}/node-pc" \
           ; do
             for DEV in "" "-dev"; do

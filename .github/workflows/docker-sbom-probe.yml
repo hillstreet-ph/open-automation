@@ -44,7 +44,7 @@ jobs:
           - platform: amd64
             runner: ${{ vars.RUNNER_PROVIDER == 'github' && 'ubuntu-latest' || 'blacksmith-4vcpu-ubuntu-2204' }}
           - platform: arm64
-            runner: ${{ vars.RUNNER_PROVIDER == 'github' && 'ubuntu-latest' || 'blacksmith-8vcpu-ubuntu-2204-arm' }}
+            runner: ${{ vars.RUNNER_PROVIDER == 'github' && 'ubuntu-24.04-arm' || 'blacksmith-8vcpu-ubuntu-2204-arm' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

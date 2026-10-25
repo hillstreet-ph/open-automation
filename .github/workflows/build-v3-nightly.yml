@@ -92,8 +92,8 @@ jobs:
         with:
           login-ghcr: true
           login-dockerhub: true
-          dockerhub-username: ${{ secrets.DOCKER_USERNAME }}
-          dockerhub-password: ${{ secrets.DOCKER_PASSWORD }}
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Claim rolling RC number for today
         id: rc
@@ -144,7 +144,7 @@ jobs:
           RC_VERSION: v3-rc
           DATE_TAG: ${{ needs.prepare.outputs.date_tag }}
           RC_NUMBER: ${{ steps.rc.outputs.number }}
-          DOCKER_BASE: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_BASE: ${{ secrets.DOCKERHUB_USERNAME }}
           N8N_IMAGE: ${{ needs.build.outputs.n8n_image }}
           N8N_DIGEST: ${{ needs.build.outputs.n8n_digest }}
           RUNNERS_IMAGE: ${{ needs.build.outputs.runners_image }}
