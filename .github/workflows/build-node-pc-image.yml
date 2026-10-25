@@ -29,17 +29,17 @@ env:
 
 jobs:
   build:
-    runs-on: ${{ matrix.runner }}
+    runs-on: ${{ vars.RUNNER_PROVIDER == 'github' && 'ubuntu-latest' || matrix.runner }}
     timeout-minutes: 150
     strategy:
       fail-fast: false
       matrix:
         include:
           - platform: linux/amd64
-            runner: blacksmith-32vcpu-ubuntu-2204
+            runner: ${{ vars.RUNNER_PROVIDER == 'github' && 'ubuntu-latest' || 'blacksmith-32vcpu-ubuntu-2204' }}
             arch: amd64
           - platform: linux/arm64
-            runner: blacksmith-32vcpu-ubuntu-2204-arm
+            runner: ${{ vars.RUNNER_PROVIDER == 'github' && 'ubuntu-latest' || 'blacksmith-32vcpu-ubuntu-2204-arm' }}
             arch: arm64
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -57,7 +57,7 @@ jobs:
           dockerhub-password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push runtime target
-        uses: useblacksmith/build-push-action@30c71162f16ea2c27c3e21523255d209b8b538c1 # v2
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
         with:
           context: .
           file: ./docker/images/node-pc/Dockerfile
@@ -78,7 +78,7 @@ jobs:
       # No no-cache here: reuses the compile layers from the runtime build
       # above, so Node compiles once per architecture
       - name: Build and push dev target
-        uses: useblacksmith/build-push-action@30c71162f16ea2c27c3e21523255d209b8b538c1 # v2
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
         with:
           context: .
           file: ./docker/images/node-pc/Dockerfile

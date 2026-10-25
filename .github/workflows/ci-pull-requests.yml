@@ -45,7 +45,7 @@ jobs:
       changed_files: ${{ steps.ci-filter.outputs.changed-files }}
       currents_record_key: ${{ secrets.CURRENTS_RECORD_KEY != '' && 'present' || '' }}
     steps:
-      - uses: useblacksmith/checkout@bcec731f1eb1367240608d1c889a75b96db6ec53 # v1.5.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # Use merge_group SHA when in merge queue, otherwise PR merge ref
           ref: ${{ github.event_name == 'merge_group' && github.event.merge_group.head_sha || format('refs/pull/{0}/merge', github.event.pull_request.number) }}
@@ -257,7 +257,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: useblacksmith/checkout@bcec731f1eb1367240608d1c889a75b96db6ec53 # v1.5.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event_name == 'merge_group' && github.event.merge_group.head_sha || format('refs/pull/{0}/merge', github.event.pull_request.number) }}
 
@@ -296,7 +296,7 @@ jobs:
       # concurrency x cap: 2 x 6 GB fits the runner's 15.2 GB.
       NODE_OPTIONS: --max-old-space-size=6144
     steps:
-      - uses: useblacksmith/checkout@bcec731f1eb1367240608d1c889a75b96db6ec53 # v1.5.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ needs.install-and-build.outputs.commit_sha }}
 
@@ -321,7 +321,7 @@ jobs:
     runs-on: ${{ vars.RUNNER_PROVIDER == 'github' && 'ubuntu-latest' || 'blacksmith-4vcpu-ubuntu-2204' }}
     needs: [install-and-build, format-check]
     steps:
-      - uses: useblacksmith/checkout@bcec731f1eb1367240608d1c889a75b96db6ec53 # v1.5.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ needs.install-and-build.outputs.commit_sha }}
 
@@ -365,7 +365,7 @@ jobs:
       matrix: ${{ steps.generate-matrix.outputs.matrix }}
       skip_tests: ${{ steps.generate-matrix.outputs.skip-tests }}
     steps:
-      - uses: useblacksmith/checkout@bcec731f1eb1367240608d1c889a75b96db6ec53 # v1.5.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ needs.install-and-build.outputs.commit_sha }}
           fetch-depth: 1
@@ -553,7 +553,7 @@ jobs:
     if: always()
     runs-on: ubuntu-slim
     steps:
-      - uses: useblacksmith/checkout@bcec731f1eb1367240608d1c889a75b96db6ec53 # v1.5.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           sparse-checkout: .github/actions/ci-filter
           sparse-checkout-cone-mode: false
@@ -607,7 +607,7 @@ jobs:
       needs.prepare-docker.result == 'success' &&
       needs.required-checks.result == 'success' &&
       (needs.e2e-performance.result == 'success' || needs.e2e-performance.result == 'skipped')
-    runs-on: blacksmith-2vcpu-ubuntu-2204
+    runs-on: ${{ vars.RUNNER_PROVIDER == 'github' && 'ubuntu-latest' || 'blacksmith-2vcpu-ubuntu-2204' }}
     steps:
       # Not `gh api --method DELETE`: written on Blacksmith runners, where
       # actions/cache is transparently intercepted, so GitHub's cache has no

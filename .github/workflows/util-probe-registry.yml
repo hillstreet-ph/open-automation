@@ -39,7 +39,7 @@ jobs:
           - blacksmith-2vcpu-ubuntu-2204
           - blacksmith-4vcpu-ubuntu-2204
           - ubuntu-latest
-    runs-on: ${{ matrix.runner }}
+    runs-on: ${{ vars.RUNNER_PROVIDER == 'github' && 'ubuntu-latest' || matrix.runner }}
     # par=1 is sequential, so a genuinely degraded path makes this slow — which is
     # itself the answer. Bounded so it cannot hang a runner indefinitely.
     timeout-minutes: 30
