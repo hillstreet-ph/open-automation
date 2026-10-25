@@ -98,13 +98,21 @@ const SAFE_REF = /^[a-zA-Z0-9_./-]+$/;
 /**
  * Ref to diff against the base branch.
  *
- * On pull_request events checkout lands on GitHub's test-merge commit. For a
- * stacked PR its first parent is the parent PR's test merge, which already
+ * On pull_request events checkout normally lands on GitHub's test-merge commit.
+ * For a stacked PR its first parent is the parent PR's test merge, which already
  * carries every base-branch commit the stack lacks, so a diff against HEAD
  * reports that drift as changed. The second parent is the PR head itself.
+ *
+ * Checkout falls back to the base branch when the test-merge ref is gone — the
+ * PR was merged or closed while the run was queued. That commit is not a merge,
+ * so it has no second parent and HEAD^2 would abort the filter. Fall back to
+ * HEAD there, which is the base-branch tip the fallback actually checked out.
  */
 export function resolveHeadRef(eventName = process.env.GITHUB_EVENT_NAME) {
-	return eventName === 'pull_request' || eventName === 'pull_request_review' ? 'HEAD^2' : 'HEAD';
+	if (eventName !== 'pull_request' && eventName !== 'pull_request_review') {
+		return 'HEAD';
+	}
+	return hasCommit('HEAD^2') ? 'HEAD^2' : 'HEAD';
 }
 
 export function getChangedFiles(baseRef, headRef = 'HEAD') {
