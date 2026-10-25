@@ -408,9 +408,53 @@ describe('getChangedFiles', () => {
 // --- resolveHeadRef ---
 
 describe('resolveHeadRef', () => {
+	const builderDir = mkdtempSync(join(tmpdir(), 'ci-filter-ref-build-'));
+	const repoDir = mkdtempSync(join(tmpdir(), 'ci-filter-ref-'));
+	const originalCwd = process.cwd();
+	const git = (args: string[], cwd: string) =>
+		execFileSync('git', args, { cwd, stdio: 'pipe' }).toString().trim();
+
+	before(() => {
+		git(['init', '-b', 'main'], builderDir);
+		git(['config', 'user.email', 'test@test.local'], builderDir);
+		git(['config', 'user.name', 'test'], builderDir);
+		writeFileSync(join(builderDir, 'base.ts'), 'base\n');
+		git(['add', '.'], builderDir);
+		git(['commit', '-m', 'root'], builderDir);
+
+		// Two diverging commits, then a merge: the merge's second parent is the PR head.
+		git(['checkout', '-b', 'pr-branch'], builderDir);
+		writeFileSync(join(builderDir, 'pr.ts'), 'pr\n');
+		git(['add', '.'], builderDir);
+		git(['commit', '-m', 'PR change'], builderDir);
+		git(['checkout', 'main'], builderDir);
+		writeFileSync(join(builderDir, 'drift.ts'), 'drift\n');
+		git(['add', '.'], builderDir);
+		git(['commit', '-m', 'main drift'], builderDir);
+		git(['merge', '--no-ff', '-m', 'Merge pr-branch into main', 'pr-branch'], builderDir);
+
+		// Full clone so a checkout of the merge commit has HEAD^2 available.
+		git(['clone', '-q', '-b', 'main', builderDir, repoDir]);
+		process.chdir(repoDir);
+	});
+
+	after(() => {
+		process.chdir(originalCwd);
+		rmSync(builderDir, { recursive: true, force: true });
+		rmSync(repoDir, { recursive: true, force: true });
+	});
+
 	it('diffs the PR head (second parent of the test merge) on pull request events', () => {
 		assert.equal(resolveHeadRef('pull_request'), 'HEAD^2');
 		assert.equal(resolveHeadRef('pull_request_review'), 'HEAD^2');
+	});
+
+	it('falls back to HEAD when the checked-out commit has no second parent', () => {
+		// Checkout fell back to the base branch (the test-merge ref was gone), so
+		// HEAD is the base tip, not a merge commit.
+		git(['checkout', '-q', '--detach', 'HEAD^1']);
+		assert.equal(resolveHeadRef('pull_request'), 'HEAD');
+		assert.equal(resolveHeadRef('pull_request_review'), 'HEAD');
 	});
 
 	it('diffs HEAD on every other event', () => {

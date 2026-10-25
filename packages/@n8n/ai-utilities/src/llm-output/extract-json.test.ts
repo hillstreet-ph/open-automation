@@ -58,11 +58,16 @@ describe('extractJsonCandidate', () => {
 	});
 
 	it('gives up on bracket noise in linear time', () => {
-		// Every unmatched opener used to rescan the whole suffix; 40k chars took over a second.
+		// Every unmatched opener used to rescan the whole suffix; 40k chars took
+		// over a second. Warm up first so JIT compilation does not dominate the
+		// measurement on a cold runner, then allow generous headroom: the linear
+		// scan finishes in single-digit milliseconds, the old one is ~200x slower.
+		extractJsonCandidate('{ '.repeat(2_000).trim());
+
 		const input = '{ '.repeat(20_000).trim();
 		const start = performance.now();
 		expect(extractJsonCandidate(input)).toBe(input);
-		expect(performance.now() - start).toBeLessThan(100);
+		expect(performance.now() - start).toBeLessThan(500);
 	});
 });
 
