@@ -48,7 +48,7 @@ jobs:
       AFFECTED_PACKAGES: ${{ inputs.affectedPackages }}
       CHANGED_FILES: ${{ inputs.changedFiles }}
     steps:
-      - uses: useblacksmith/checkout@bcec731f1eb1367240608d1c889a75b96db6ec53 # v1.5.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.ref }}
 
@@ -115,7 +115,7 @@ jobs:
       AFFECTED_PACKAGES: ${{ inputs.affectedPackages }}
       CHANGED_FILES: ${{ inputs.changedFiles }}
     steps:
-      - uses: useblacksmith/checkout@bcec731f1eb1367240608d1c889a75b96db6ec53 # v1.5.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.ref }}
 
@@ -160,7 +160,7 @@ jobs:
       AFFECTED_PACKAGES: ${{ inputs.affectedPackages }}
       CHANGED_FILES: ${{ inputs.changedFiles }}
     steps:
-      - uses: useblacksmith/checkout@bcec731f1eb1367240608d1c889a75b96db6ec53 # v1.5.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.ref }}
 
@@ -219,7 +219,7 @@ jobs:
       AFFECTED_PACKAGES: ${{ inputs.affectedPackages }}
       CHANGED_FILES: ${{ inputs.changedFiles }}
     steps:
-      - uses: useblacksmith/checkout@bcec731f1eb1367240608d1c889a75b96db6ec53 # v1.5.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.ref }}
 
@@ -264,7 +264,7 @@ jobs:
       AFFECTED_PACKAGES: ${{ inputs.affectedPackages }}
       CHANGED_FILES: ${{ inputs.changedFiles }}
     steps:
-      - uses: useblacksmith/checkout@bcec731f1eb1367240608d1c889a75b96db6ec53 # v1.5.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.ref }}
 
@@ -315,7 +315,7 @@ jobs:
       AFFECTED_PACKAGES: ${{ inputs.affectedPackages }}
       CHANGED_FILES: ${{ inputs.changedFiles }}
     steps:
-      - uses: useblacksmith/checkout@bcec731f1eb1367240608d1c889a75b96db6ec53 # v1.5.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.ref }}
 
