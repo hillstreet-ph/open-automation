@@ -110,13 +110,13 @@ jobs:
         with:
           login-ghcr: false
           login-dockerhub: true
-          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-username: ${{ vars.DOCKERHUB_USERNAME }}
           dockerhub-password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Tag stable/latest Docker image
         if: needs.validate-inputs.outputs.release_channel == 'stable'
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKER_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
         run: |
           docker buildx imagetools create -t "${DOCKER_USERNAME}/n8n:stable" "${DOCKER_USERNAME}/n8n:${{ needs.validate-inputs.outputs.version }}"
           docker buildx imagetools create -t "${DOCKER_USERNAME}/n8n:latest" "${DOCKER_USERNAME}/n8n:${{ needs.validate-inputs.outputs.version }}"
@@ -126,7 +126,7 @@ jobs:
       - name: Tag beta/next Docker image
         if: needs.validate-inputs.outputs.release_channel == 'beta'
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKER_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
         run: |
           docker buildx imagetools create -t "${DOCKER_USERNAME}/n8n:beta" "${DOCKER_USERNAME}/n8n:${{ needs.validate-inputs.outputs.version }}"
           docker buildx imagetools create -t "${DOCKER_USERNAME}/n8n:next" "${DOCKER_USERNAME}/n8n:${{ needs.validate-inputs.outputs.version }}"

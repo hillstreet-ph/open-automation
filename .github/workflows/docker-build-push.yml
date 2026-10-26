@@ -221,7 +221,7 @@ jobs:
           SHORT_SHA: ${{ needs.determine-build-context.outputs.short_sha }}
           # Namespace for the Docker Hub tags; without it docker-tags.mjs falls
           # back to the upstream 'n8nio' default and pushes to the wrong repo.
-          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKER_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
         run: |
           # Build the optional --date flag in shell (not via a template expansion) so
           # the caller-supplied input never expands directly into the command line.
@@ -247,7 +247,7 @@ jobs:
         with:
           login-ghcr: true
           login-dockerhub: ${{ needs.determine-build-context.outputs.push_to_docker == 'true' }}
-          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-username: ${{ vars.DOCKERHUB_USERNAME }}
           dockerhub-password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Docker images
@@ -312,7 +312,7 @@ jobs:
         with:
           login-ghcr: true
           login-dockerhub: ${{ needs.determine-build-context.outputs.push_to_docker == 'true' }}
-          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-username: ${{ vars.DOCKERHUB_USERNAME }}
           dockerhub-password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Create GHCR multi-arch manifests
@@ -401,7 +401,7 @@ jobs:
       - name: Create Docker Hub manifests
         if: needs.determine-build-context.outputs.push_to_docker == 'true'
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKER_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
           DATE_TAG: ${{ inputs.date_tag }}
           SHORT_SHA: ${{ needs.determine-build-context.outputs.short_sha }}
           N8N_PC_MANIFEST_TAG: ${{ needs.build-and-push-docker.outputs.n8n_pc_primary_ghcr_manifest_tag }}
